@@ -4,13 +4,20 @@ from pygame.locals import *
 pygame.init()
 fpsClock = pygame.time.Clock()
 
-windowRootSurface = pygame.display.set_mode((1024, 768))
+windowRootSurface = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption('Elasund')
+pygame.mouse.set_visible(False)
 
 mouse_pos = (0, 0)
 
 purple_color = pygame.Color(100, 10, 100)
 green_color = pygame.Color(30, 200, 30)
+red_color = pygame.Color(200, 200, 30)
+
+cursor_color = green_color
+
+myimage = pygame.image.load("textures/Board.png").convert()
+cursor = pygame.image.load("textures/cursor_sm.png").convert_alpha()
 
 fps = 60
 
@@ -20,9 +27,10 @@ MOUSE_BUTTON_RIGHT = 3
 runing = True
 while runing:
 	windowRootSurface.fill(purple_color)
-	
+	windowRootSurface.blit(myimage, myimage.get_rect())
+
 	mouse_pos = pygame.mouse.get_pos()
-	pygame.draw.circle(windowRootSurface, green_color, mouse_pos, 15, 3)
+	#pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
 
 	for event in pygame.event.get():
 		if (event.type == QUIT):
@@ -31,13 +39,15 @@ while runing:
 			mouse_x, mouse_y = event.pos
 		elif event.type == MOUSEBUTTONDOWN:
 			if event.button == MOUSE_BUTTON_LEFT:
-				fps = 30
+				cursor_color = red_color
 			elif event.button == MOUSE_BUTTON_RIGHT:
-				fps = 60
+				cursor_color = green_color
 
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE:
 				pygame.event.post(pygame.event.Event(QUIT))
+
+	windowRootSurface.blit(cursor, mouse_pos)
 
 	pygame.display.flip()
 	fpsClock.tick(fps)
