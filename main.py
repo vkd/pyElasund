@@ -13,7 +13,7 @@ mouse_pos = (0, 0)
 
 purple_color = pygame.Color(100, 10, 100)
 green_color = pygame.Color(30, 200, 30)
-red_color = pygame.Color(200, 200, 30)
+yellow_color = pygame.Color(200, 200, 30)
 
 cursor_color = green_color
 
@@ -40,7 +40,7 @@ while runing:
 			mouse_x, mouse_y = event.pos
 		elif event.type == MOUSEBUTTONDOWN:
 			if event.button == MOUSE_BUTTON_LEFT:
-				cursor_color = red_color
+				cursor_color = yellow_color
 			elif event.button == MOUSE_BUTTON_RIGHT:
 				cursor_color = green_color
 
