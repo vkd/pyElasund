@@ -14,6 +14,9 @@ mouse_pos = (0, 0)
 purple_color = pygame.Color(100, 10, 100)
 green_color = pygame.Color(30, 200, 30)
 yellow_color = pygame.Color(200, 200, 30)
+COLOR_BLUE = pygame.Color(20, 20, 200)
+COLOR_BLACK = pygame.Color(0, 0, 0)
+COLOR_WHITE = pygame.Color(255, 255, 255)
 
 cursor_color = green_color
 
@@ -24,6 +27,14 @@ fps = 60
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_RIGHT = 3
+
+def get_cell(x, y):
+	start = (151, 183)
+	step = 50
+	border = 1
+	return (start[0] + x * (step + border), start[1] + y * (step + border))
+
+font = pygame.font.Font(None, 24)
 
 runing = True
 while runing:
@@ -48,6 +59,17 @@ while runing:
 			if event.key == K_ESCAPE:
 				pygame.event.post(pygame.event.Event(QUIT))
 
+	windowRootSurface.blit(font.render('(%s,%s)' % (mouse_pos[0], mouse_pos[1]), 1, COLOR_BLACK), (700, 20))
+
+	for i in range(10):
+		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(0, i), get_cell(9, i))
+	for i in range(9):
+		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(i, 0), get_cell(i, 10))
+	for i in range(9):
+		for j in range(10):
+			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, COLOR_BLUE), get_cell(i, j))
+
+	#pygame.draw.rect(windowRootSurface, Color(20, 20, 200), Rect(mouse_pos, (50, 50)))
 	windowRootSurface.blit(cursor, mouse_pos)
 
 	pygame.display.flip()
