@@ -6,6 +6,7 @@ fpsClock = pygame.time.Clock()
 
 windowRootSurface = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption('Elasund')
+pygame.display.set_icon(pygame.image.load('textures/icon.png').convert_alpha())
 pygame.mouse.set_visible(False)
 
 mouse_pos = (0, 0)
@@ -16,7 +17,7 @@ red_color = pygame.Color(200, 200, 30)
 
 cursor_color = green_color
 
-myimage = pygame.image.load("textures/Board.png").convert()
+myimage = pygame.image.load("textures/Board.png").convert_alpha()
 cursor = pygame.image.load("textures/cursor_sm.png").convert_alpha()
 
 fps = 60
@@ -30,7 +31,7 @@ while runing:
 	windowRootSurface.blit(myimage, myimage.get_rect())
 
 	mouse_pos = pygame.mouse.get_pos()
-	#pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
+	pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
 
 	for event in pygame.event.get():
 		if (event.type == QUIT):
