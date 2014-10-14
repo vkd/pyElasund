@@ -1,6 +1,8 @@
 import pygame
 from pygame.locals import *
 
+import texture_manager
+
 pygame.init()
 fpsClock = pygame.time.Clock()
 
@@ -20,11 +22,17 @@ COLOR_WHITE = pygame.Color(255, 255, 255)
 
 cursor_color = green_color
 
-board = pygame.image.load("textures/Board.png").convert_alpha()
-cursor = pygame.image.load("textures/cursor_sm.png").convert_alpha()
+tm = texture_manager.TextureManager()
+tm.init_my()
 
-top_corner = pygame.image.load("textures/Corner1.png").convert_alpha()
-bottom_corner = pygame.image.load("textures/Corner2.png").convert_alpha()
+def load_texture(name):
+	return pygame.image.load('textures/%s.png' % name).convert_alpha()
+
+board = load_texture('Board')
+cursor = load_texture('cursor_sm')
+
+top_corner = load_texture('Corner1')
+bottom_corner = load_texture('Corner2')
 
 fps = 60
 
