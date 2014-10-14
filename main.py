@@ -32,18 +32,18 @@ MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_RIGHT = 3
 
 def get_cell(x, y):
-	start = (151, 183)
+	start = (152, 184)
 	step = 50
 	border = 1
 	return (start[0] + y * (step + border), start[1] + x * (step + border))
 
 font = pygame.font.Font(None, 24)
 
+count_players = 4
 runing = True
 while runing:
 	windowRootSurface.fill(purple_color)
 	windowRootSurface.blit(board, board.get_rect())
-	count_players = 4
 	windowRootSurface.blit(top_corner, get_cell(-1, 4 + (count_players - 2) * 2))
 	windowRootSurface.blit(bottom_corner, get_cell(9, 4 + (count_players - 2) * 2))
 
@@ -62,14 +62,14 @@ while runing:
 				cursor_color = green_color
 
 		elif event.type == KEYDOWN:
-			if event.key == K_ESCAPE:
+			if event.key == K_ESCAPE or event.key == K_q:
 				pygame.event.post(pygame.event.Event(QUIT))
 
 	windowRootSurface.blit(font.render('(%s,%s)' % mouse_pos, 1, COLOR_BLACK), (700, 20))
 
-	for i in range(10):
+	for i in range(11):
 		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(i, 0), get_cell(i, 9))
-	for i in range(9):
+	for i in range(10):
 		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(0, i), get_cell(10, i))
 	for i in range(10):
 		for j in range(9):
