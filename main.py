@@ -20,8 +20,11 @@ COLOR_WHITE = pygame.Color(255, 255, 255)
 
 cursor_color = green_color
 
-myimage = pygame.image.load("textures/Board.png").convert_alpha()
+board = pygame.image.load("textures/Board.png").convert_alpha()
 cursor = pygame.image.load("textures/cursor_sm.png").convert_alpha()
+
+top_corner = pygame.image.load("textures/Corner1.png").convert_alpha()
+bottom_corner = pygame.image.load("textures/Corner2.png").convert_alpha()
 
 fps = 60
 
@@ -39,7 +42,10 @@ font = pygame.font.Font(None, 24)
 runing = True
 while runing:
 	windowRootSurface.fill(purple_color)
-	windowRootSurface.blit(myimage, myimage.get_rect())
+	windowRootSurface.blit(board, board.get_rect())
+	count_players = 4
+	windowRootSurface.blit(top_corner, get_cell(-1, 4 + (count_players - 2) * 2))
+	windowRootSurface.blit(bottom_corner, get_cell(9, 4 + (count_players - 2) * 2))
 
 	mouse_pos = pygame.mouse.get_pos()
 	pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
@@ -67,7 +73,7 @@ while runing:
 		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(0, i), get_cell(10, i))
 	for i in range(10):
 		for j in range(9):
-			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, COLOR_BLUE), get_cell(i, j))
+			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, COLOR_BLUE), tuple(i + 5 for i in get_cell(i, j)))
 
 	#pygame.draw.rect(windowRootSurface, Color(20, 20, 200), Rect(mouse_pos, (50, 50)))
 	windowRootSurface.blit(cursor, mouse_pos)
