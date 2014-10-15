@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 
 from managers.texture_manager import TextureManager
+from constants.colors import Colors
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -15,16 +16,11 @@ pygame.display.set_caption('Elasund')
 pygame.display.set_icon(tm.textures['icon'])
 pygame.mouse.set_visible(False)
 
+colors = Colors()
+
 mouse_pos = (0, 0)
 
-purple_color = pygame.Color(100, 10, 100)
-green_color = pygame.Color(30, 200, 30)
-yellow_color = pygame.Color(200, 200, 30)
-COLOR_BLUE = pygame.Color(20, 20, 200)
-COLOR_BLACK = pygame.Color(0, 0, 0)
-COLOR_WHITE = pygame.Color(255, 255, 255)
-
-cursor_color = green_color
+#cursor_color = colors.GREEN
 
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_RIGHT = 3
@@ -40,16 +36,16 @@ font = pygame.font.Font(None, 24)
 count_players = 4
 runing = True
 while runing:
-	windowRootSurface.fill(purple_color)
+	windowRootSurface.fill(colors.PURPLE)
 	windowRootSurface.blit(tm.textures['board'], (0, 0))
 
 	for i in range(11):
-		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(i, 0), get_cell(i, 9))
+		pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(i, 0), get_cell(i, 9))
 	for i in range(10):
-		pygame.draw.line(windowRootSurface, COLOR_WHITE, get_cell(0, i), get_cell(10, i))
+		pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(0, i), get_cell(10, i))
 	for i in range(10):
 		for j in range(9):
-			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, COLOR_BLUE), tuple(i + 5 for i in get_cell(i, j)))
+			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, colors.BLUE), tuple(i + 5 for i in get_cell(i, j)))
 
 	windowRootSurface.blit(tm.textures['corner_top'], get_cell(-1, 4 + (count_players - 2) * 2))
 	windowRootSurface.blit(tm.textures['corner_bottom'], get_cell(9, 4 + (count_players - 2) * 2))
@@ -64,15 +60,15 @@ while runing:
 			mouse_x, mouse_y = event.pos
 		elif event.type == MOUSEBUTTONDOWN:
 			if event.button == MOUSE_BUTTON_LEFT:
-				cursor_color = yellow_color
+				cursor_color = colors.YELLOW
 			elif event.button == MOUSE_BUTTON_RIGHT:
-				cursor_color = green_color
+				cursor_color = colors.GREEN
 
 		elif event.type == KEYDOWN:
 			if event.key == K_ESCAPE or event.key == K_q:
 				pygame.event.post(pygame.event.Event(QUIT))
 
-	windowRootSurface.blit(font.render('(%s,%s)' % mouse_pos, 1, COLOR_BLACK), (700, 20))
+	windowRootSurface.blit(font.render('(%s,%s)' % mouse_pos, 1, colors.BLACK), (700, 20))
 
 	#pygame.draw.rect(windowRootSurface, Color(20, 20, 200), Rect(mouse_pos, (50, 50)))
 	windowRootSurface.blit(tm.textures['cursor'], mouse_pos)
