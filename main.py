@@ -11,6 +11,8 @@ pygame.display.set_caption('Elasund')
 pygame.display.set_icon(pygame.image.load('textures/icon.png').convert_alpha())
 pygame.mouse.set_visible(False)
 
+tm = texture_manager.TextureManager('textures/')
+
 mouse_pos = (0, 0)
 
 purple_color = pygame.Color(100, 10, 100)
@@ -22,17 +24,6 @@ COLOR_WHITE = pygame.Color(255, 255, 255)
 
 cursor_color = green_color
 
-tm = texture_manager.TextureManager()
-tm.init_my()
-
-def load_texture(name):
-	return pygame.image.load('textures/%s.png' % name).convert_alpha()
-
-board = load_texture('Board')
-cursor = load_texture('cursor_sm')
-
-top_corner = load_texture('Corner1')
-bottom_corner = load_texture('Corner2')
 
 fps = 60
 
@@ -51,9 +42,9 @@ count_players = 4
 runing = True
 while runing:
 	windowRootSurface.fill(purple_color)
-	windowRootSurface.blit(board, board.get_rect())
-	windowRootSurface.blit(top_corner, get_cell(-1, 4 + (count_players - 2) * 2))
-	windowRootSurface.blit(bottom_corner, get_cell(9, 4 + (count_players - 2) * 2))
+	windowRootSurface.blit(tm.textures['board'], (0, 0))
+	windowRootSurface.blit(tm.textures['corner_top'], get_cell(-1, 4 + (count_players - 2) * 2))
+	windowRootSurface.blit(tm.textures['corner_bottom'], get_cell(9, 4 + (count_players - 2) * 2))
 
 	mouse_pos = pygame.mouse.get_pos()
 	pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
@@ -84,7 +75,7 @@ while runing:
 			windowRootSurface.blit(font.render('(%s, %s)' % (i, j), 1, COLOR_BLUE), tuple(i + 5 for i in get_cell(i, j)))
 
 	#pygame.draw.rect(windowRootSurface, Color(20, 20, 200), Rect(mouse_pos, (50, 50)))
-	windowRootSurface.blit(cursor, mouse_pos)
+	windowRootSurface.blit(tm.textures['cursor'], mouse_pos)
 
 	pygame.display.flip()
 	fpsClock.tick(fps)
