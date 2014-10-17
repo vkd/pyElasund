@@ -28,6 +28,7 @@ mouse_pos = (0, 0)
 MOUSE_BUTTON_LEFT = 1
 MOUSE_BUTTON_RIGHT = 3
 
+
 def get_cell(x, y):
 	start = (152, 184)
 	step = 50

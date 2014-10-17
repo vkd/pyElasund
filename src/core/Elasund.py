@@ -1,7 +1,7 @@
 from core.Player import Player
 
-class Elasund():
 
+class Elasund():
 	_players = []
 	_current_player = None
 

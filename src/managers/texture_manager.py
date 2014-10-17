@@ -1,5 +1,6 @@
 import pygame
 
+
 class TextureManager():
 	path = ''
 	textures = {}
@@ -19,18 +20,18 @@ class TextureManager():
 			'church': {i: self.load_texture('%sChurch%s' % (folder, i)) for i in range(1, 10)},
 			'draw_well': self.load_texture('%sDrawWell' % folder),
 			'fair': self.load_texture('%sFair' % folder),
-			'government': { i: self.load_texture('%sGovernment%s' % (folder, i)) for i in range(1, 4) },
+			'government': {i: self.load_texture('%sGovernment%s' % (folder, i)) for i in range(1, 4)},
 			'hotel': self.load_texture('%sHotel' % folder),
-			'house': { colors[i]: self.load_texture('%sHouse%s' % (folder, i)) for i in range(4) },
+			'house': {colors[i]: self.load_texture('%sHouse%s' % (folder, i)) for i in range(4)},
 			'shop': self.load_texture('%sShop' % folder),
-			'small_totem': { colors[i]: self.load_texture('%sSmallTotem%s' % (folder, i)) for i in range(4) },
-			'totem': { colors[i]: self.load_texture('%sTotem%s' % (folder, i)) for i in range(4) },
-			'workshop': { colors[i]: self.load_texture('%sWorkShop%s' % (folder, i)) for i in range(4) }
+			'small_totem': {colors[i]: self.load_texture('%sSmallTotem%s' % (folder, i)) for i in range(4)},
+			'totem': {colors[i]: self.load_texture('%sTotem%s' % (folder, i)) for i in range(4)},
+			'workshop': {colors[i]: self.load_texture('%sWorkShop%s' % (folder, i)) for i in range(4)}
 		}
 
 		folder = 'Claims/'
 		self.textures['claim'] = {
-			colors[c]: { i: self.load_texture('%s%s%s' % (folder, colors[c][:1], i)) for i in range(5) } for c in range(4)
+			colors[c]: {i: self.load_texture('%s%s%s' % (folder, colors[c][:1], i)) for i in range(5)} for c in range(4)
 		}
 
 		folder = 'Helps/'
@@ -60,7 +61,6 @@ class TextureManager():
 			'green': self.load_texture('VoteGreen'),
 			'red': self.load_texture('VoteRed')
 		}
-
 
 	def load_texture(self, name):
 		return pygame.image.load('{0}{1}.png'.format(self.path, name)).convert_alpha()
