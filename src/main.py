@@ -3,6 +3,9 @@ from pygame.locals import *
 
 from managers.texture_manager import TextureManager
 from constants.colors import Colors
+from core.Elasund import Elasund
+
+elasund = Elasund('red', 'blue', 'green', 'yellow')
 
 pygame.init()
 fpsClock = pygame.time.Clock()
@@ -33,7 +36,7 @@ def get_cell(x, y):
 
 font = pygame.font.Font("../fonts/Miramob.ttf", 16)
 
-count_players = 4
+count_players = len(elasund.getPlayers())
 runing = True
 while runing:
 	windowRootSurface.fill(colors.PURPLE)
