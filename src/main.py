@@ -5,7 +5,7 @@ from managers.texture_manager import TextureManager
 from constants.colors import Colors
 from core.Elasund import Elasund
 
-elasund = Elasund('red', 'blue', 'green', 'yellow')
+elasund = Elasund(('red', 'blue', 'green', 'yellow'))
 
 pygame.init()
 fpsClock = pygame.time.Clock()
