@@ -1,4 +1,4 @@
-from core import *
+from core.Player import Player
 
 
 class Elasund():
