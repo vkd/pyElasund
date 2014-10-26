@@ -1,4 +1,5 @@
 from core.Player import Player
+from core.Board import Board
 
 
 class Elasund():
