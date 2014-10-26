@@ -30,10 +30,10 @@ MOUSE_BUTTON_RIGHT = 3
 
 
 def get_cell(x, y):
-	start = (152, 184)
+	start = (153, 184)
 	step = 50
 	border = 1
-	return (start[0] + y * (step + border), start[1] + x * (step + border))
+	return (start[0] + x * (step + border), start[1] + y * (step + border))
 
 font = pygame.font.Font("../fonts/Miramob.ttf", 16)
 
@@ -43,17 +43,17 @@ while runing:
 	windowRootSurface.fill(colors.PURPLE)
 	windowRootSurface.blit(tm.textures['board'], (0, 0))
 
-	# for i in range(11):
-	# 	pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(i, 0), get_cell(i, 9))
-	# for i in range(10):
-	# 	pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(0, i), get_cell(10, i))
+	# for x in range(10):
+	# 	pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(x, 0), get_cell(x, 10))
+	# for y in range(11):
+	# 	pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(0, y), get_cell(9, y))
 
-	for i in range(10):
-		for j in range(9):
-			windowRootSurface.blit(font.render('(%s,%s)' % (i, j), 1, colors.BLUE), tuple(i + 5 for i in get_cell(i, j)))
+	for x in range(9):
+		for y in range(10):
+			windowRootSurface.blit(font.render('(%s,%s)' % (x, y), 1, colors.BLUE), tuple(i + 5 for i in get_cell(x, y)))
 
-	windowRootSurface.blit(tm.textures['corner_top'], get_cell(-1, 4 + (count_players - 2) * 2))
-	windowRootSurface.blit(tm.textures['corner_bottom'], get_cell(9, 4 + (count_players - 2) * 2))
+	windowRootSurface.blit(tm.textures['corner_top'], get_cell(4 + (count_players - 2) * 2, -1))
+	windowRootSurface.blit(tm.textures['corner_bottom'], get_cell(4 + (count_players - 2) * 2, 9))
 
 	mouse_pos = pygame.mouse.get_pos()
 	#pygame.draw.circle(windowRootSurface, cursor_color, mouse_pos, 15, 3)
