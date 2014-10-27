@@ -4,6 +4,8 @@ class Player():
 	_victoryPoint = 10
 	_mills = 0
 	_wall = 1
+	gold = 0
+	votes = {'red': 0, 'blue': 0, 'green': 0}
 
 	def __init__(self, color):
 		self._color = color
