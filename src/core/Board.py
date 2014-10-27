@@ -1,4 +1,7 @@
+import random
+
 from core.Building import Building
+from core.Map import Map
 
 
 class Board():
@@ -7,10 +10,13 @@ class Board():
 	_shipIsRed = False
 
 	_buildings = {}
+	_claims = {}
+
+	_map = None
 
 	def __init__(self, colors, players):
 		self._buildings = {
-			'church': [Building('church', index=i) for i in range(9)],
+			'church': random.shuffle([Building('church', index=i) for i in range(9)]),
 			'draw_well': [Building('draw_well') for i in range(4)],
 			'fair': [Building('fair') for i in range(4)],
 			'government': [Building('government', index=i) for i in range(3)],
@@ -21,3 +27,8 @@ class Board():
 			'totem': [Building('totem', color=colors[i]) for i in range(4)],
 			'workshop': [Building('workshop', color=colors[i]) for i in range(4)],
 		}
+
+		self._claims = {color: [i for i in range(5)] for color in colors}
+
+		self._map = Map()
+		self._map.addCorners(len(players))

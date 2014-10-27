@@ -48,8 +48,8 @@ while runing:
 	# for y in range(11):
 	# 	pygame.draw.line(windowRootSurface, colors.WHITE, get_cell(0, y), get_cell(9, y))
 
-	for x in range(9):
-		for y in range(10):
+	for x in range(0, 10):
+		for y in range(-1, 11):
 			windowRootSurface.blit(font.render('(%s,%s)' % (x, y), 1, colors.BLUE), tuple(i + 5 for i in get_cell(x, y)))
 
 	windowRootSurface.blit(tm.textures['corner_top'], get_cell(4 + (count_players - 2) * 2, -1))

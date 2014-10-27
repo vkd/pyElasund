@@ -18,6 +18,7 @@ class Elasund():
 	_colors = ['red', 'blue', 'green', 'yellow']
 
 	def __init__(self, colors):
+		# TODO double colors
 		if (len(colors) < 2 or len(colors) > 4):
 			self._setError('Count of players must be 2, 3 or 4')
 			return
