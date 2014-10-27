@@ -5,6 +5,7 @@ from core.Board import Board
 class Elasund():
 	_state = ''
 
+	_board = None
 	_players = ()
 
 	_message = ''
@@ -14,11 +15,14 @@ class Elasund():
 		('', 'init'): 'income',
 	}
 
+	_colors = ['red', 'blue', 'green', 'yellow']
+
 	def __init__(self, colors):
 		if (len(colors) < 2 or len(colors) > 4):
 			self._setError('Count of players must be 2, 3 or 4')
 			return
 		self._players = tuple(Player(p) for p in colors)
+		self._board = Board(self._colors, self._players)
 		self._changeState('init')
 
 	def getPlayers(self):

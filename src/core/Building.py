@@ -3,7 +3,7 @@ class Building():
 	_color = ''
 	_size = ()
 
-	def __init__(self, type, *args):
+	def __init__(self, type, **kwargs):
 		type_size = {
 			'church': (1, 1),
 			'draw_well': (1, 1),
