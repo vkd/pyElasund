@@ -3,6 +3,7 @@ class Player():
 	_color = ''
 	_victoryPoint = 10
 	_mills = 0
+	_wall = 1
 
 	def __init__(self, color):
 		self._color = color
@@ -15,3 +16,17 @@ class Player():
 
 	def getMills(self):
 		return self._mills
+
+	def getWall(self):
+		result = {'type': 'none', 'count': 0}
+		if self._wall >= 10:
+			return result
+
+		result['type'] = 'vote'
+		result['count'] = 2 if self._wall >= 5 else 1
+		if self._wall % 3 == 0:
+			result['type'] = 'point'
+			result['count'] = 0
+
+		self._wall += 1
+		return result

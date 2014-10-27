@@ -15,5 +15,15 @@ class PlayerTestCase(unittest.TestCase):
         mills = player.getMills()
         self.assertEqual(mills, 0)
 
+    def test_playersWalls(self):
+        player = Player('red')
+
+        types = ['vote', 'vote', 'point', 'vote', 'vote', 'point', 'vote', 'vote', 'point', 'none', 'none']
+        counts = [1, 1, 0, 1, 2, 0, 2, 2, 0, 0, 0]
+        for i in range(len(types)):
+            wall = player.getWall()
+            self.assertEqual(wall['type'], types[i])
+            self.assertEqual(wall['count'], counts[i])
+
 if __name__ == '__main__':
     unittest.main()
