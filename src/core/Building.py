@@ -17,6 +17,10 @@ class Building():
 			'workshop': (1, 2),
 		}
 		self._size = type_size[type]
+		self._color = kwargs.get('color', '')
 
 	def getSize(self):
 		return self._size
+
+	def getColor(self):
+		return self._color

@@ -32,6 +32,9 @@ class Elasund():
 	def getState(self):
 		return self._state
 
+	def getTiles(self):
+		return self._board.tiles
+
 	def _setError(self, msg):
 		self._changeState('error')
 		self._message = msg
