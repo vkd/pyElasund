@@ -1,7 +1,6 @@
 import random
 
 from core.Building import Building
-from core.Map import Map
 
 
 class Board():
@@ -12,7 +11,7 @@ class Board():
 	_buildings = {}
 	_claims = {}
 
-	_map = None
+	_map = {}
 
 	def __init__(self, colors, players):
 		self._buildings = {
@@ -30,5 +29,14 @@ class Board():
 
 		self._claims = {color: [i for i in range(5)] for color in colors}
 
-		self._map = Map()
-		self._map.addCorners(len(players))
+		self.addCorners(len(players))
+
+	def addCorners(self, countPlayers):
+		index = 2 * countPlayers
+		self._map[(index, -1)] = {'type': 'corner'}
+		self._map[(index + 1, -1)] = {'type': 'corner'}
+		self._map[(index + 1, 0)] = {'type': 'corner'}
+
+		self._map[(index, 10)] = {'type': 'corner'}
+		self._map[(index + 1, 10)] = {'type': 'corner'}
+		self._map[(index + 1, 9)] = {'type': 'corner'}
