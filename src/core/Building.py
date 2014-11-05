@@ -2,8 +2,9 @@ class Building():
 
     _color = ''
     _size = ()
+    _type = ''
 
-    def __init__(self, type, **kwargs):
+    def __init__(self, buildingType, **kwargs):
         type_size = {
             'church': (1, 1),
             'draw_well': (1, 1),
@@ -16,7 +17,8 @@ class Building():
             'totem': (1, 2),
             'workshop': (1, 2),
         }
-        self._size = type_size[type]
+        self._type = buildingType
+        self._size = type_size[buildingType]
         self._color = kwargs.get('color', '')
 
     def getSize(self):
@@ -24,3 +26,6 @@ class Building():
 
     def getColor(self):
         return self._color
+
+    def getType(self):
+        return self._type

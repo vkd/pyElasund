@@ -11,7 +11,7 @@ class Board():
     buildings = {}
     claims = {}
 
-    tiles = {}
+    cells = {}
 
     def __init__(self, colors, players):
         self.buildings = {
@@ -40,24 +40,37 @@ class Board():
 
         for x in range(size[0]):
             for y in range(size[1]):
-                if self.tiles.get((position[0] + x, position[1] + y), None) is not None:
+                if self.cells.get((position[0] + x, position[1] + y), None) is not None:
                     return 'Error: cells not free'
 
         for x in range(size[0]):
             for y in range(size[1]):
-                self.tiles[(position[0] + x, position[1] + y)] = ('ref', position,)
+                self.cells[(position[0] + x, position[1] + y)] = ('ref', position,)
 
-        self.tiles[position] = ('building', building)
+        self.cells[position] = ('building', building)
+
+    def destroyBuilding(self, position):
+        cell = self.cells.get(position, None)
+        if cell is None:
+            return 'Error: building not found'
+
+        self.buildings[cell[1].getType()].append(cell[1])
+
+        size = cell[1].getSize()
+
+        for x in range(size[0]):
+            for y in range(size[1]):
+                del self.cells[(position[0] + x, position[1] + y)]
 
     def _addCorners(self, countPlayers):
         index = 2 * countPlayers
-        self.tiles[(index, -1)] = {'type': 'corner'}
-        self.tiles[(index + 1, -1)] = {'type': 'corner'}
-        self.tiles[(index + 1, 0)] = {'type': 'corner'}
+        self.cells[(index, -1)] = {'type': 'corner'}
+        self.cells[(index + 1, -1)] = {'type': 'corner'}
+        self.cells[(index + 1, 0)] = {'type': 'corner'}
 
-        self.tiles[(index, 10)] = {'type': 'corner'}
-        self.tiles[(index + 1, 10)] = {'type': 'corner'}
-        self.tiles[(index + 1, 9)] = {'type': 'corner'}
+        self.cells[(index, 10)] = {'type': 'corner'}
+        self.cells[(index + 1, 10)] = {'type': 'corner'}
+        self.cells[(index + 1, 9)] = {'type': 'corner'}
 
     def _addStartBuildings(self, players):
         totem_position = {
