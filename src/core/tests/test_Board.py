@@ -23,7 +23,7 @@ class BoardTestCase(unittest.TestCase):
     def test_buildBuilding(self):
         board = self.initialize_board()
         self.assertEqual(len(board.buildings['hotel']), 5)
-        board.buildBuilding(board.buildings['hotel'].pop(), (5, 5))
+        board.buildBuilding(board.buildings['hotel'][0], (5, 5))
         self.assertEqual(len(board.buildings['hotel']), 4)
 
         cell = board.cells[(5, 5)]
@@ -50,52 +50,36 @@ class BoardTestCase(unittest.TestCase):
 
     def test_destroyBuilding_onList(self):
         board = self.initialize_board()
-        building = board.buildings['hotel'].pop()
+        building = board.buildings['hotel'][0]
         board.buildBuilding(building, (5, 5))
         board.destroyBuilding((5, 5))
 
-        cell = board.cells.get((5, 5), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((5, 6), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((6, 5), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((6, 6), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((7, 6), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((6, 7), 'empty')
-        self.assertEqual(cell, 'empty')
+        for x in range(5, 8):
+            for y in range(5, 8):
+                cell = board.cells.get((x, y), 'empty')
+                self.assertEqual(cell, 'empty')
 
     def test_destroyBuilding_onDict(self):
         board = self.initialize_board()
         building = board.buildings['house']['red']
-        del board.buildings['house']['red']
         board.buildBuilding(building, (5, 5))
         board.destroyBuilding((5, 5))
 
-        cell = board.cells.get((5, 5), 'empty')
-        self.assertEqual(cell, 'empty')
+        for x in range(5, 8):
+            for y in range(5, 8):
+                cell = board.cells.get((x, y), 'empty')
+                self.assertEqual(cell, 'empty')
 
-        cell = board.cells.get((5, 6), 'empty')
-        self.assertEqual(cell, 'empty')
+    def test_destroyBuilding_fromRef(self):
+        board = self.initialize_board()
+        building = board.buildings['house']['red']
+        board.buildBuilding(building, (5, 5))
+        board.destroyBuilding((5, 5))
 
-        cell = board.cells.get((6, 5), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((6, 6), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((7, 6), 'empty')
-        self.assertEqual(cell, 'empty')
-
-        cell = board.cells.get((6, 7), 'empty')
-        self.assertEqual(cell, 'empty')
+        for x in range(5, 8):
+            for y in range(5, 8):
+                cell = board.cells.get((x, y), 'empty')
+                self.assertEqual(cell, 'empty')
 
 if __name__ == '__main__':
     unittest.main()

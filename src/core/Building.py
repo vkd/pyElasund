@@ -3,6 +3,7 @@ class Building():
     _color = ''
     _size = ()
     _type = ''
+    _index = 0
 
     def __init__(self, buildingType, **kwargs):
         type_size = {
@@ -20,6 +21,7 @@ class Building():
         self._type = buildingType
         self._size = type_size[buildingType]
         self._color = kwargs.get('color', '')
+        self._index = kwargs.get('index', 0)
 
     def getSize(self):
         return self._size
@@ -29,3 +31,6 @@ class Building():
 
     def getType(self):
         return self._type
+
+    def getIndex(self):
+        return self._index

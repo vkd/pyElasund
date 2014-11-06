@@ -36,6 +36,12 @@ class Board():
         if building is None:
             return 'Error: building is empty'
 
+        if building.getType() in ['house', 'small_totem', 'totem', 'workshop']:
+            del self.buildings[building.getType()][building.getColor()]
+        # elif building.getType() in ['church', 'government']:
+        else:
+            self.buildings[building.getType()].remove(building)
+
         size = building.getSize()
 
         for x in range(size[0]):
@@ -51,10 +57,19 @@ class Board():
 
     def destroyBuilding(self, position):
         cell = self.cells.get(position, None)
-        if cell is None:
-            return 'Error: building not found'
 
-        self.buildings[cell[1].getType()].append(cell[1])
+        if cell is None:
+            return 'Cell is empty'
+        elif cell[0] == 'ref':
+            cell = self.cells.get(cell[1], None)
+
+        if cell[0] != 'building':
+            return 'Cell is not a building'
+
+        if cell[1].getType() in ['house', 'small_totem', 'totem', 'workshop']:
+            self.buildings[cell[1].getType()][cell[1].getColor()] = cell[1]
+        else:
+            self.buildings[cell[1].getType()].append(cell[1])
 
         size = cell[1].getSize()
 
@@ -86,5 +101,5 @@ class Board():
             'yellow': (2, 7),
         }
         for player in players:
-            self.buildBuilding(self.buildings['totem'].pop(player.getColor(), None), totem_position[player.getColor()])
-            self.buildBuilding(self.buildings['small_totem'].pop(player.getColor(), None), small_totem_position[player.getColor()])
+            self.buildBuilding(self.buildings['totem'][player.getColor()], totem_position[player.getColor()])
+            self.buildBuilding(self.buildings['small_totem'][player.getColor()], small_totem_position[player.getColor()])
