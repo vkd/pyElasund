@@ -77,6 +77,10 @@ class Board():
             for y in range(size[1]):
                 del self.cells[(position[0] + x, position[1] + y)]
 
+    def getRandomVote(self):
+        votes = ['red', 'blue', 'green']
+        return random.choice(votes)
+
     def _addCorners(self, countPlayers):
         index = 2 * countPlayers
         self.cells[(index, -1)] = {'type': 'corner'}
