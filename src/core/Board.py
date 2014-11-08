@@ -1,9 +1,11 @@
 import random
 
 from core.Building import Building
+from core.SumDice import SumDice
 
 
 class Board():
+    _sumDice = None
 
     _shipPosition = 2
     _shipIsRed = False
@@ -28,6 +30,8 @@ class Board():
         }
 
         self.claims = {color: [i for i in range(5)] for color in colors}
+
+        self._sumDice = SumDice(2, 6)
 
         self._addCorners(len(players))
         self._addStartBuildings(players)
