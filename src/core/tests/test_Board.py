@@ -14,11 +14,11 @@ class BoardTestCase(unittest.TestCase):
     def test_createBoard_checkStartBuildings(self):
         board = self.initialize_board()
         tiles = board.cells
-        self.assertEqual(tiles[(3, 2)][0], 'building')
-        self.assertEqual(tiles[(4, 5)][0], 'building')
-        self.assertEqual(tiles[(4, 6)][0], 'ref')
+        self.assertEqual(tiles[(3, 2)]['type'], 'building')
+        self.assertEqual(tiles[(4, 5)]['type'], 'building')
+        self.assertEqual(tiles[(4, 6)]['type'], 'ref')
         self.assertEqual(len(board.buildings['totem']), 0)
-        self.assertEqual(tiles[(3, 2)][1].getColor(), 'red')
+        self.assertEqual(tiles[(3, 2)]['building'].getColor(), 'red')
 
     def test_buildBuilding(self):
         board = self.initialize_board()
@@ -27,26 +27,26 @@ class BoardTestCase(unittest.TestCase):
         self.assertEqual(len(board.buildings['hotel']), 4)
 
         cell = board.cells[(5, 5)]
-        self.assertEqual(cell[0], 'building')
-        self.assertEqual(cell[1].getType(), 'hotel')
+        self.assertEqual(cell['type'], 'building')
+        self.assertEqual(cell['building'].getType(), 'hotel')
 
         cell = board.cells[(5, 6)]
-        self.assertEqual(cell[0], 'ref')
-        self.assertTupleEqual(cell[1], (5, 5))
+        self.assertEqual(cell['type'], 'ref')
+        self.assertTupleEqual(cell['position'], (5, 5))
 
         cell = board.cells[(6, 5)]
-        self.assertEqual(cell[0], 'ref')
-        self.assertTupleEqual(cell[1], (5, 5))
+        self.assertEqual(cell['type'], 'ref')
+        self.assertTupleEqual(cell['position'], (5, 5))
 
         cell = board.cells[(6, 6)]
-        self.assertEqual(cell[0], 'ref')
-        self.assertTupleEqual(cell[1], (5, 5))
+        self.assertEqual(cell['type'], 'ref')
+        self.assertTupleEqual(cell['position'], (5, 5))
 
-        cell = board.cells.get((7, 6), 'empty')
-        self.assertEqual(cell, 'empty')
+        cell = board.cells.get((7, 6), None)
+        self.assertIsNone(cell)
 
-        cell = board.cells.get((6, 7), 'empty')
-        self.assertEqual(cell, 'empty')
+        cell = board.cells.get((6, 7), None)
+        self.assertIsNone(cell)
 
     def test_destroyBuilding_onList(self):
         board = self.initialize_board()

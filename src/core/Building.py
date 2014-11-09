@@ -64,3 +64,14 @@ class Building():
             'workshop': 2,
         }
         return count_claims[self._type]
+
+    def getIncomeType(self):
+        incomeType = {
+            'hotel': 'vote',
+            'house': 'vote',
+            'shop': 'gold',
+            'small_totem': 'vote',
+            'totem': 'gold',
+            'workshop': 'gold',
+        }
+        return incomeType.get(self.getType(), None)

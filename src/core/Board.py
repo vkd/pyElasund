@@ -5,10 +5,10 @@ from core.SumDice import SumDice
 
 
 class Board():
-    _sumDice = None
+    # _sumDice = None
 
-    _shipPosition = 2
-    _shipIsRed = False
+    # _shipPosition = 2
+    # _shipIsRed = False
 
     buildings = {}
     claims = {}
@@ -22,6 +22,7 @@ class Board():
         self.buildings = {}
         self.claims = {}
         self.cells = {}
+        self._countPlayers = len(players)
 
         self.buildings = {
             'church': random.shuffle([Building('church', index=i) for i in range(9)]),
@@ -40,7 +41,7 @@ class Board():
 
         self._sumDice = SumDice(2, 6)
 
-        self._addCorners(len(players))
+        self._addCorners(self._countPlayers)
         self._addStartBuildings(players)
 
     def buildBuilding(self, building, position):
@@ -62,27 +63,34 @@ class Board():
 
         for x in range(size[0]):
             for y in range(size[1]):
-                self.cells[(position[0] + x, position[1] + y)] = ('ref', position,)
+                self.cells[(position[0] + x, position[1] + y)] = {
+                    'type': 'ref',
+                    'position': position
+                }
 
-        self.cells[position] = ('building', building)
+        self.cells[position] = {
+            'type': 'building',
+            'building': building
+        }
 
     def destroyBuilding(self, position):
         cell = self.cells.get(position, None)
 
         if cell is None:
             return 'Cell is empty'
-        elif cell[0] == 'ref':
-            cell = self.cells.get(cell[1], None)
+        elif cell['type'] == 'ref':
+            cell = self.cells.get(cell['position'], None)
 
-        if cell[0] != 'building':
+        if cell['type'] != 'building':
             return 'Cell is not a building'
 
-        if cell[1].getType() in ['house', 'small_totem', 'totem', 'workshop']:
-            self.buildings[cell[1].getType()][cell[1].getColor()] = cell[1]
+        building = cell['building']
+        if building.getType() in ['house', 'small_totem', 'totem', 'workshop']:
+            self.buildings[building.getType()][building.getColor()] = building
         else:
-            self.buildings[cell[1].getType()].append(cell[1])
+            self.buildings[building.getType()].append(building)
 
-        size = cell[1].getSize()
+        size = building.getSize()
 
         for x in range(size[0]):
             for y in range(size[1]):
@@ -97,20 +105,24 @@ class Board():
         if not exists:
             return 'Error: claim not found'
 
-        if self.cells.get(position, 'empty') != 'empty':
+        if self.cells.get(position, None) is not None:
             return 'Cell in not empty'
 
         claim = self.claims[color].pop(value)
-        self.cells[position] = ('claim', claim)
+        self.cells[position] = {
+            'type': 'claim',
+            'claim': claim
+        }
 
     def removeClaim(self, position):
-        if self.cells.get(position, 'empty') == 'empty':
+        if self.cells.get(position, None) is None:
             return 'Cell is empty'
 
-        if self.cells[position][0] != 'claim':
+        cell = self.cells[position]
+        if cell['type'] != 'claim':
             return 'Cell is not claim'
 
-        claim = self.cells[position][1]
+        claim = cell['claim']
         del self.cells[position]
 
         self.claims[claim['color']].insert(claim['value'], claim)
@@ -145,3 +157,7 @@ class Board():
         for player in players:
             self.buildBuilding(self.buildings['totem'][player.getColor()], totem_position[player.getColor()])
             self.buildBuilding(self.buildings['small_totem'][player.getColor()], small_totem_position[player.getColor()])
+
+    def _checkBoardSize(self, position):
+        if position[0] < 0 or position[1] > (4 + 2 * self._countPlayers):
+            return False

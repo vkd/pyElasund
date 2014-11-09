@@ -59,14 +59,14 @@ class Elasund():
                 pos = (position[0] + x, position[1] + y,)
                 cell = self._board.cells.get(pos, None)
                 if cell is not None:
-                    if cell[0] == 'ref':
-                        cell = self._board.cells[cell[1]]
+                    if cell['type'] == 'ref':
+                        cell = self._board.cells[cell['position']]
 
-                    if cell[0] == 'claim':
-                        claims[cell[1]['color']] += cell[1]['value']
+                    if cell['type'] == 'claim':
+                        claims[cell['claim']['color']] += cell['claim']['value']
                         count_claims += 1
-                    elif cell[0] == 'building':
-                        buildings.append(cell[1])
+                    elif cell['type'] == 'building':
+                        buildings.append(cell['building'])
 
         for b in buildings:
             if b.getType() in ['church']:
@@ -108,12 +108,12 @@ class Elasund():
                 pos = (position[0] + x, position[1] + y,)
                 cell = self._board.cells.get(pos, None)
                 if cell is not None:
-                    if cell[0] == 'ref':
-                        cell = self._board.cells[cell[1]]
+                    if cell['type'] == 'ref':
+                        cell = self._board.cells[cell['position']]
 
-                    if cell[0] == 'claim':
+                    if cell['type'] == 'claim':
                         self._board.removeClaim(pos)
-                    elif cell[0] == 'building':
+                    elif cell['type'] == 'building':
                         self._board.destroyBuilding(pos)
 
         self._board.buildBuilding(building, position)
