@@ -9,7 +9,9 @@ class TestSumDice(unittest.TestCase):
         result = [0 for i in range(9)]
         sumDice = SumDice(1, 7)
         for i in range(7):
-            result[sumDice.next()] += 1
+            value = sumDice.next()
+            self.assertLessEqual(value, 7)
+            result[value] += 1
         needResult = [0, 1, 1, 1, 1, 1, 1, 1, 0]
         self.assertListEqual(result, needResult)
 

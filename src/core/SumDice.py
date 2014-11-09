@@ -8,6 +8,7 @@ class SumDice():
     def __init__(self, count, maxValue):
         self._count = count
         self._maxValue = maxValue
+        self._listValues = []
         self._createList()
 
     def next(self):

@@ -16,6 +16,13 @@ class Board():
     cells = {}
 
     def __init__(self, colors, players):
+        self._sumDice = None
+        self._shipPosition = 2
+        self._shipIsRed = False
+        self.buildings = {}
+        self.claims = {}
+        self.cells = {}
+
         self.buildings = {
             'church': random.shuffle([Building('church', index=i) for i in range(9)]),
             'draw_well': [Building('draw_well') for i in range(4)],
@@ -29,7 +36,7 @@ class Board():
             'workshop': {c: Building('workshop', color=c) for c in colors},
         }
 
-        self.claims = {color: [i for i in range(5)] for color in colors}
+        self.claims = {color: [{'color': color, 'value': i} for i in range(5)] for color in colors}
 
         self._sumDice = SumDice(2, 6)
 
@@ -80,6 +87,33 @@ class Board():
         for x in range(size[0]):
             for y in range(size[1]):
                 del self.cells[(position[0] + x, position[1] + y)]
+
+    def putClaim(self, color, value, position):
+        for c in self.claims[color]:
+            if c['value'] == value:
+                exists = True
+                break
+
+        if not exists:
+            return 'Error: claim not found'
+
+        if self.cells.get(position, 'empty') != 'empty':
+            return 'Cell in not empty'
+
+        claim = self.claims[color].pop(value)
+        self.cells[position] = ('claim', claim)
+
+    def removeClaim(self, position):
+        if self.cells.get(position, 'empty') == 'empty':
+            return 'Cell is empty'
+
+        if self.cells[position][0] != 'claim':
+            return 'Cell is not claim'
+
+        claim = self.cells[position][1]
+        del self.cells[position]
+
+        self.claims[claim['color']].insert(claim['value'], claim)
 
     def getRandomVote(self):
         votes = ['red', 'blue', 'green']

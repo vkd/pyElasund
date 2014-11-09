@@ -5,6 +5,25 @@ from core.Elasund import Elasund
 
 class ElasundTestCase(unittest.TestCase):
 
+    def test_build(self):
+        colors = ('red', 'blue', 'green', 'yellow',)
+        elasund = Elasund(colors)
+        player = elasund.getCurrentPlayer()
+        player.gold = 3
+
+        error = elasund.claim((5, 5), 1)
+        self.assertIsNone(error)
+        error = elasund.claim((6, 6), 0)
+        self.assertIsNone(error)
+
+        buildings = elasund.getBuildings()
+        self.assertEqual(len(buildings['hotel']), 5)
+
+        error = elasund.build((5, 5), buildings['hotel'][0])
+        self.assertIsNone(error)
+
+        self.assertEqual(len(buildings['hotel']), 4)
+
     def test_createNewGame_stateOfEmptyPlayers(self):
         colors = ()
         elasund = Elasund(colors)

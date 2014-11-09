@@ -19,7 +19,7 @@ class Building():
             'workshop': (1, 2),
         }
         self._type = buildingType
-        self._size = type_size[buildingType]
+        self._size = type_size[self._type]
         self._color = kwargs.get('color', '')
         self._index = kwargs.get('index', 0)
 
@@ -34,3 +34,33 @@ class Building():
 
     def getIndex(self):
         return self._index
+
+    def getNeedCountClaims(self):
+        count_claims = {
+            'church': 0,
+            'draw_well': 1,
+            'fair': 1,
+            'government': 3,
+            'hotel': 2,
+            'house': 1,
+            'shop': 2,
+            'small_totem': 0,
+            'totem': 0,
+            'workshop': 1,
+        }
+        return count_claims[self._type]
+
+    def getCost(self):
+        count_claims = {
+            'church': 7,
+            'draw_well': 5,
+            'fair': 5,
+            'government': 5,
+            'hotel': 3,
+            'house': 1,
+            'shop': 3,
+            'small_totem': 0,
+            'totem': 0,
+            'workshop': 2,
+        }
+        return count_claims[self._type]
