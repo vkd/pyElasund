@@ -5,23 +5,13 @@ from core.SumDice import SumDice
 
 
 class Board():
-    # _sumDice = None
-
-    # _shipPosition = 2
-    # _shipIsRed = False
-
-    buildings = {}
-    claims = {}
-
-    cells = {}
 
     def __init__(self, colors, players):
+        self.cells = {}
+
         self._sumDice = None
         self._shipPosition = 2
         self._shipIsRed = False
-        self.buildings = {}
-        self.claims = {}
-        self.cells = {}
         self._countPlayers = len(players)
 
         self.buildings = {

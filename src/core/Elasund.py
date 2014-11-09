@@ -3,30 +3,28 @@ from core.Board import Board
 
 
 class Elasund():
-    _state = ''
-
-    _board = None
-    _players = ()
-    _currentPlayerIndex = 0
-
-    _message = ''
-
-    _states = {
-        ('*', 'error'): 'error',
-        ('', 'init'): 'income',
-    }
-
-    _colors = ['red', 'blue', 'green', 'yellow']
 
     def __init__(self, colors):
-        # TODO double colors
+        self._state = ''
+
+        self._players = tuple(Player(p) for p in colors)
+        self._currentPlayerIndex = 0
+
+        self._board = None
+
+        self._message = ''
+
+        self._states = {
+            ('*', 'error'): 'error',
+            ('', 'init'): 'income',
+        }
+
+        self._colors = ['red', 'blue', 'green', 'yellow']
+
+        # TODO check double colors
         if (len(colors) < 2 or len(colors) > 4):
             self._setError('Count of players must be 2, 3 or 4')
             return
-        self._state = ''
-        self._message = ''
-        self._players = tuple(Player(p) for p in colors)
-        self._currentPlayerIndex = 0
         self._board = Board(self._colors, self._players)
         self._changeState('init')
 

@@ -1,23 +1,17 @@
 class Player():
 
-    _color = ''
-    _victoryPoint = 10
-    _mills = 0
-    _wall = 1
-    gold = 0
-    votes = {'red': 0, 'blue': 0, 'green': 0}
-
     def __init__(self, color):
+        self.gold = 0
+        self.votes = {'red': 0, 'blue': 0, 'green': 0}
+
+        self.victoryPoint = 10
+        self.mills = 0
+
+        self._wall = 1
         self._color = color
 
     def getColor(self):
         return self._color
-
-    def getVictoryPoint(self):
-        return self._victoryPoint
-
-    def getMills(self):
-        return self._mills
 
     def getWall(self):
         result = {'type': 'none', 'count': 0}

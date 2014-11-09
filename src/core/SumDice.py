@@ -1,13 +1,9 @@
 class SumDice():
 
-    _count = 0
-    _minValue = 1
-    _maxValue = 0
-    _listValues = []
-
     def __init__(self, count, maxValue):
         self._count = count
         self._maxValue = maxValue
+        self._minValue = 1
         self._listValues = []
         self._createList()
 

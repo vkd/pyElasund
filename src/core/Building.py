@@ -1,10 +1,5 @@
 class Building():
 
-    _color = ''
-    _size = ()
-    _type = ''
-    _index = 0
-
     def __init__(self, buildingType, **kwargs):
         type_size = {
             'church': (1, 1),
