@@ -1,5 +1,6 @@
 from core.Player import Player
 from core.Board import Board
+from core.SumDice import SumDice
 
 
 class Elasund():
@@ -20,6 +21,8 @@ class Elasund():
         }
 
         self._colors = ['red', 'blue', 'green', 'yellow']
+
+        self._sumDice = SumDice(2, 6)
 
         # TODO check double colors
         if (len(colors) < 2 or len(colors) > 4):
@@ -42,6 +45,47 @@ class Elasund():
 
     def getBuildings(self):
         return self._board.buildings
+
+    def income(self):
+        dice = self._sumDice.next()
+
+        self._board.shipIsRed = dice == 7
+        if dice == self._board.shipPosition:
+            # TODO make choise by player
+            dice += 2 if dice <= 10 else -2
+        self._board.shipPosition = dice
+
+        if self._board.shipIsRed:
+            ''' Pirate ship '''
+            # TODO pirate ship
+            pass
+        else:
+            ''' Income '''
+            y = self._board.getRowByDice(dice)
+            for x in range(0, self._board.getMaxWidthBoard() + 1):
+                pos = (x, y,)
+                cell = self._board.cells.get(pos, None)
+                if cell is None:
+                    break
+
+                if cell['type'] == 'ref':
+                    cell = self._board.cells[cell['position']]
+
+                if cell['type'] != 'building':
+                    break
+
+                building = cell['building']
+                incomeType = building.getIncomeType()
+                if incomeType is None:
+                    break
+
+                    for p in self._players:
+                        if p.getColor() == building.getColor():
+                            if incomeType == 'gold':
+                                p.gold += 1
+                            elif incomeType == 'vote':
+                                p.votes[self._board.getRandomVote()] += 1
+                            break
 
     def build(self, position, building):
         size = building.getSize()

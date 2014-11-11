@@ -1,7 +1,6 @@
 import random
 
 from core.Building import Building
-from core.SumDice import SumDice
 
 
 class Board():
@@ -10,8 +9,8 @@ class Board():
         self.cells = {}
 
         self._sumDice = None
-        self._shipPosition = 2
-        self._shipIsRed = False
+        self.shipPosition = 0
+        self.shipIsRed = False
         self._countPlayers = len(players)
 
         self.buildings = {
@@ -29,10 +28,14 @@ class Board():
 
         self.claims = {color: [{'color': color, 'value': i} for i in range(5)] for color in colors}
 
-        self._sumDice = SumDice(2, 6)
-
-        self._addCorners(self._countPlayers)
+        self._addCorners()
         self._addStartBuildings(players)
+
+    def getMaxWidthBoard(self):
+        return 2 * self._countPlayers
+
+    def getRowByDice(self, dice):
+        return dice - (3 if dice >= 8 else 2)
 
     def buildBuilding(self, building, position):
         if building is None:
@@ -121,8 +124,8 @@ class Board():
         votes = ['red', 'blue', 'green']
         return random.choice(votes)
 
-    def _addCorners(self, countPlayers):
-        index = 2 * countPlayers
+    def _addCorners(self):
+        index = self.getMaxWidthBoard()
         self.cells[(index, -1)] = {'type': 'corner'}
         self.cells[(index + 1, -1)] = {'type': 'corner'}
         self.cells[(index + 1, 0)] = {'type': 'corner'}
@@ -149,5 +152,5 @@ class Board():
             self.buildBuilding(self.buildings['small_totem'][player.getColor()], small_totem_position[player.getColor()])
 
     def _checkBoardSize(self, position):
-        if position[0] < 0 or position[1] > (4 + 2 * self._countPlayers):
+        if position[0] < 0 or position[1] > self.getMaxWidthBoard():
             return False
