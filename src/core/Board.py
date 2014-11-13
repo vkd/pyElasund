@@ -124,6 +124,32 @@ class Board():
         votes = ['red', 'blue', 'green']
         return random.choice(votes)
 
+    def getCountMills(self, position):
+        if not self._checkBoardSize(position):
+            return 0
+        x, y = position
+        if x == 0 and y >= 0 and y <= 9:
+            return 1
+        if x == 5 and (y == 0 or y == 9):
+            return 2
+        if x == 7 and (y == 0 or y == 9):
+            return 2
+        return 0
+
+    def getCubesByMills(self, mills):
+        count = 0
+        if mills >= 3:
+            count += 1
+        if mills >= 5:
+            count += 1
+        if mills >= 7:
+            count += 1
+        if mills >= 9:
+            count += 1
+        if mills >= 11:
+            count += 1
+        return count
+
     def _addCorners(self):
         index = self.getMaxWidthBoard()
         self.cells[(index, -1)] = {'type': 'corner'}
@@ -152,5 +178,9 @@ class Board():
             self.buildBuilding(self.buildings['small_totem'][player.getColor()], small_totem_position[player.getColor()])
 
     def _checkBoardSize(self, position):
-        if position[0] < 0 or position[1] > self.getMaxWidthBoard():
+        x, y = position
+        if x < 0 or x > self.getMaxWidthBoard():
             return False
+        if y < 0 or y > 9:
+            return False
+        return True

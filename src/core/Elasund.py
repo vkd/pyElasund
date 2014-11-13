@@ -160,14 +160,29 @@ class Elasund():
                     if cell['type'] == 'claim':
                         self._board.removeClaim(pos)
                     elif cell['type'] == 'building':
-                        self._board.destroyBuilding(pos)
+                        self._preDestroy(cell['building'], pos)
 
-        building.setColor(player.getColor())
-        player.victoryPoint -= building.getCubes()
-        self._board.buildBuilding(building, position)
+        self._preBuild(building, position)
 
     def claim(self, position, value):
         return self._board.putClaim(self._players[self._currentPlayerIndex].getColor(), value, position)
+
+    def victory(self, player):
+        pass
+
+    def _preBuild(self, building, position):
+        building.setColor(self.getCurrentPlayer().getColor())
+        self.getCurrentPlayer().mills += self._board.getCountMills(position)
+        self._removeVictoryPoint(self.getCurrentPlayer(), building.getCubes())
+        self._board.buildBuilding(building, position)
+
+    def _preDestroy(self, building, position):
+        for p in self.getPlayers():
+            if p == building.getColor():
+                p.mills -= self._board.getCountMills(position)
+                self._addVictoryPoint(p, building.getCubes())
+                break
+        self._board.destroyBuilding(position)
 
     def _setError(self, msg):
         self._changeState('error')
@@ -178,3 +193,24 @@ class Elasund():
             self._state = self._states.get((self._state, cmd), self._state)
         elif ('*', cmd) in self._states:
             self._state = self._states.get(('*', cmd), self._state)
+
+    def _addVictoryPoint(self, player, value):
+        player.victoryPoint += value
+
+    def _removeVictoryPoint(self, player, value):
+        player.victoryPoint -= value
+        if player.victoryPoint <= 0:
+            count_check = 0
+            for pos, cell in self._board.cells.items():
+                if cell['type'] == 'building':
+                    if cell['building'].getColor() == player.getColor():
+                        count_check += cell['building'].getCubes()
+
+            count_check += self._board.getCubesByMills(player.mills)
+
+            count_check += (player._wall - 1) / 3
+
+            if count_check >= 10:
+                self.victory(player)
+            else:
+                self.error = 'Check count cubes on %s player' % player.getColor()
