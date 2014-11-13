@@ -24,6 +24,10 @@ class Building():
     def getColor(self):
         return self._color
 
+    def setColor(self, color):
+        if self.getType() not in ['house', 'small_totem', 'totem', 'workshop']:
+            self._color = color
+
     def getType(self):
         return self._type
 
@@ -70,3 +74,26 @@ class Building():
             'workshop': 'gold',
         }
         return incomeType.get(self.getType(), None)
+
+    def getCubes(self):
+        cubes = {
+            'church': 1,
+            'draw_well': 1,
+            'fair': 1,
+            'government': 2,
+            'hotel': 1,
+            'shop': 1,
+        }
+        return cubes.get(self._type, 0)
+
+    def getCubesByLine(self, y):
+        cubesByLine = {
+            ('church', 0): 1,
+            ('draw_well', 0): 1,
+            ('fair', 0): 1,
+            ('government', 0): 1,
+            ('government', 1): 1,
+            ('hotel', 0): 1,
+            ('shop', 0): 1,
+        }
+        return cubesByLine.get((self._type, y), 0)

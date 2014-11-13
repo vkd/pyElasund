@@ -93,6 +93,10 @@ class Elasund():
 
         player = self.getCurrentPlayer()
 
+        if building.getType() in ['house', 'small_totem', 'totem', 'workshop']:
+            if building.getColor() != player.getColor():
+                return ''
+
         buildings = []
         claims = {c: 0 for c in self._colors}
         count_claims = 0
@@ -158,6 +162,8 @@ class Elasund():
                     elif cell['type'] == 'building':
                         self._board.destroyBuilding(pos)
 
+        building.setColor(player.getColor())
+        player.victoryPoint -= building.getCubes()
         self._board.buildBuilding(building, position)
 
     def claim(self, position, value):
