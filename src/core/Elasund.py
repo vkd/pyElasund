@@ -27,6 +27,7 @@ class Elasund():
         # TODO check double colors
         if (len(colors) < 2 or len(colors) > 4):
             self._setError('Count of players must be 2, 3 or 4')
+            self._players = ()
             return
         self._board = Board(self._colors, self._players)
         self._changeState('init')
@@ -87,7 +88,7 @@ class Elasund():
                                 p.votes[self._board.getRandomVote()] += 1
                             break
 
-    def build(self, position, building):
+    def build(self, position, building, **addition):
         size = building.getSize()
         square = size[0] * size[1]
 
@@ -164,7 +165,7 @@ class Elasund():
 
         self._preBuild(building, position)
 
-    def claim(self, position, value):
+    def claim(self, position, value, **addition):
         return self._board.putClaim(self._players[self._currentPlayerIndex].getColor(), value, position)
 
     def victory(self, player):

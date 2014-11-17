@@ -13,7 +13,10 @@ class Player():
     def getColor(self):
         return self._color
 
-    def getWall(self):
+    def getTopWall(self):
+        return self._wall
+
+    def getNextWall(self):
         result = {'type': 'none', 'count': 0}
         if self._wall >= 10:
             return result
