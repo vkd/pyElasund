@@ -41,6 +41,9 @@ class Board():
         if building is None:
             return 'Error: building is empty'
 
+        if not self._checkAreaByBoardSize(position, building.getSize()):
+            return 'Error: out of range of board'
+
         if building.getType() in ['house', 'small_totem', 'totem', 'workshop']:
             del self.buildings[building.getType()][building.getColor()]
         # elif building.getType() in ['church', 'government']:
@@ -67,6 +70,9 @@ class Board():
         }
 
     def destroyBuilding(self, position):
+        if not self._checkBoardSize(position):
+            return 'Error: out of range of board'
+
         cell = self.cells.get(position, None)
 
         if cell is None:
@@ -89,7 +95,51 @@ class Board():
             for y in range(size[1]):
                 del self.cells[(position[0] + x, position[1] + y)]
 
+    def buildWall(self, position, value, color):
+        error_msg = 'Error: position is wrong'
+        if position[0] >= 2 and position[0] < (2 * self._countPlayers):
+            if position[1] == -1:
+                type = 'top'
+            elif position[1] == 10:
+                type = 'bottom'
+            else:
+                return error_msg
+        elif position[0] == (1 + 2 * self._countPlayers) and position[1] >= 1 and position[1] <= 8:
+            type = 'right'
+        else:
+            return error_msg
+
+        current_cell_wall = self.cells.get(position, None)
+        if current_cell_wall is not None:
+            return 'Error: current position is not empty'
+
+        error_is_None = 'Error: previous cell is empty'
+        if type == 'top' or type == 'bottom':
+            prev = self.cells.get((position[0] - 1, position[1]), None)
+            if prev is None:
+                return error_is_None
+        elif type == 'right':
+            prev_up = self.cells.get((position[0], position[1] - 1), None)
+            if prev_up is None:
+                return error_is_None
+            prev_down = self.cells.get((position[0], position[1] + 1), None)
+            if prev_down is None:
+                return error_is_None
+
+        self.cells[position] = {'type': 'wall', 'color': color, 'value': value}
+
+    def getWallCost(self, position):
+        if position[0] >= 2 and position[0] < (2 * self._countPlayers):
+            if position[1] == -1 or position[1] == 10:
+                return 2
+        elif position[0] == (1 + 2 * self._countPlayers) and position[1] >= 1 and position[1] <= 8:
+            return 4
+        return -1
+
     def putClaim(self, color, value, position):
+        if not self._checkBoardSize(position):
+            return 'Error: out of range of board'
+
         for c in self.claims[color]:
             if c['value'] == value:
                 exists = True
@@ -108,6 +158,9 @@ class Board():
         }
 
     def removeClaim(self, position):
+        if not self._checkBoardSize(position):
+            return 'Error: out of range of board'
+
         if self.cells.get(position, None) is None:
             return 'Cell is empty'
 
@@ -183,4 +236,11 @@ class Board():
             return False
         if y < 0 or y > 9:
             return False
+        return True
+
+    def _checkAreaByBoardSize(self, position, size):
+        for x in range(position[0], position[0] + size[0] + 1):
+            for y in range(position[1], position[1] + size[1] + 1):
+                if not self._checkBoardSize((x, y,)):
+                    return False
         return True

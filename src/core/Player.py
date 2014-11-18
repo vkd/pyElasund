@@ -17,7 +17,7 @@ class Player():
         return self._wall
 
     def getNextWall(self):
-        result = {'type': 'none', 'count': 0}
+        result = {'type': 'none', 'count': 0, 'value': self._wall}
         if self._wall >= 10:
             return result
 

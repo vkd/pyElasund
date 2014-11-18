@@ -165,6 +165,22 @@ class Elasund():
 
         self._preBuild(building, position)
 
+    def buildWall(self, position):
+        player = self.getCurrentPlayer()
+        wall = player.getNextWall()
+        if wall['type'] == 'none':
+            return
+
+        wall_cost = self._board.getWallCost(position)
+        if wall_cost <= 0:
+            return 'Error: cell is not for wall'
+        if player.gold < wall_cost:
+            return 'Error: player need more gold'
+
+        msg = self._board.buildWall(position, wall['value'], player.getColor())
+        if msg is not None:
+            return msg
+
     def claim(self, position, value, **addition):
         return self._board.putClaim(self._players[self._currentPlayerIndex].getColor(), value, position)
 
