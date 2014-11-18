@@ -169,13 +169,19 @@ class Elasund():
         player = self.getCurrentPlayer()
         wall = player.getNextWall()
         if wall['type'] == 'none':
-            return
+            return 'Error: player build max walls'
 
         wall_cost = self._board.getWallCost(position)
         if wall_cost <= 0:
             return 'Error: cell is not for wall'
         if player.gold < wall_cost:
             return 'Error: player need more gold'
+
+        if wall['type'] == 'point':
+            self._removeVictoryPoint(player, 1)
+        elif wall['type'] == 'vote':
+            for i in range(wall['count']):
+                player.votes[self._board.getRandomVote()] += 1
 
         msg = self._board.buildWall(position, wall['value'], player.getColor())
         if msg is not None:
