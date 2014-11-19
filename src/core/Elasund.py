@@ -1,3 +1,5 @@
+import random
+
 from core.Player import Player
 from core.Board import Board
 from core.SumDice import SumDice
@@ -8,7 +10,7 @@ class Elasund():
     def __init__(self, colors):
         self._state = ''
 
-        self._players = tuple(Player(p) for p in colors)
+        self._players = tuple(Player(p) for p in random.shuffle(colors))
         self._currentPlayerIndex = 0
 
         self._board = None
@@ -18,6 +20,7 @@ class Elasund():
         self._states = {
             ('*', 'error'): 'error',
             ('', 'init'): 'income',
+            ('*', 'win'): 'winner',
         }
 
         self._colors = ['red', 'blue', 'green', 'yellow']
@@ -191,7 +194,8 @@ class Elasund():
         return self._board.putClaim(self._players[self._currentPlayerIndex].getColor(), value, position)
 
     def victory(self, player):
-        pass
+        self._changeState('win')
+        self._message = '%s player is win' % player.getColor()
 
     def _preBuild(self, building, position):
         building.setColor(self.getCurrentPlayer().getColor())
