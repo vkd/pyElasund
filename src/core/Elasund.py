@@ -10,7 +10,9 @@ class Elasund():
     def __init__(self, colors):
         self._state = ''
 
-        self._players = tuple(Player(p) for p in random.shuffle(colors))
+        list_of_colors = list(colors)
+        random.shuffle(list_of_colors)
+        self._players = tuple([Player(p) for p in list_of_colors])
         self._currentPlayerIndex = 0
 
         self._board = None
