@@ -66,5 +66,16 @@ class ElasundTestCase(unittest.TestCase):
         self.assertEqual(state, 'error')
         self.assertEqual(len(elasund.getPlayers()), 0)
 
+    def test_decorator_income(self):
+        colors = ('red', 'blue', 'green', 'yellow')
+        elasund = Elasund(colors)
+        self.assertEqual(elasund.getState(), 'income')
+        result = elasund.income()
+        self.assertEqual(result, 'ok')
+        self.assertEqual(elasund.getState(), 'building')
+        result = elasund.income()
+        self.assertEqual(result, 'Error: current state is not income')
+        self.assertEqual(elasund.getState(), 'building')
+
 if __name__ == '__main__':
     unittest.main()

@@ -3,6 +3,7 @@ import random
 from core.Player import Player
 from core.Board import Board
 from core.SumDice import SumDice
+from core.Decorators import checkStateDecorator
 
 
 class Elasund():
@@ -22,6 +23,7 @@ class Elasund():
         self._states = {
             ('*', 'error'): 'error',
             ('', 'init'): 'income',
+            ('income', 'incomed'): 'building',
             ('*', 'win'): 'winner',
         }
 
@@ -52,6 +54,7 @@ class Elasund():
     def getBuildings(self):
         return self._board.buildings
 
+    @checkStateDecorator('income', 'Error: current state is not income')
     def income(self):
         dice = self._sumDice.next()
 
@@ -92,6 +95,9 @@ class Elasund():
                             elif incomeType == 'vote':
                                 p.votes[self._board.getRandomVote()] += 1
                             break
+
+        self._changeState('incomed')
+        return 'ok'
 
     def build(self, position, building, **addition):
         size = building.getSize()
