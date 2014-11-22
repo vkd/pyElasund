@@ -11,10 +11,7 @@ class Elasund():
     def __init__(self, colors):
         self._state = ''
 
-        list_of_colors = list(colors)
-        random.shuffle(list_of_colors)
-        self._players = tuple([Player(p) for p in list_of_colors])
-        self._currentPlayerIndex = 0
+        self._players = tuple([Player(c) for c in colors])
 
         self._board = None
 
@@ -24,6 +21,14 @@ class Elasund():
             ('*', 'error'): 'error',
             ('', 'init'): 'income',
             ('income', 'incomed'): 'building',
+            ('building', 'build'): 'building2',
+            ('building2', 'build'): 'claim',
+            ('building', 'skip'): 'claim',
+            ('building2', 'skip'): 'claim',
+            ('claim', 'claimed'): 'adding',
+            ('claim', 'skip'): 'adding',
+            ('adding', 'add'): 'income',
+            ('adding', 'skip'): 'income',
             ('*', 'win'): 'winner',
         }
 
@@ -36,6 +41,8 @@ class Elasund():
             self._setError('Count of players must be 2, 3 or 4')
             self._players = ()
             return
+
+        self._currentPlayerIndex = random.randrange(len(self._players))
         self._board = Board(self._colors, self._players)
         self._changeState('init')
 
@@ -54,7 +61,7 @@ class Elasund():
     def getBuildings(self):
         return self._board.buildings
 
-    @checkStateDecorator('income', 'Error: current state is not income')
+    @checkStateDecorator(('income',), 'Error: current state is not income')
     @returnOkIfNotError
     @changeStateOnSuccessful('incomed')
     def income(self):
@@ -98,6 +105,9 @@ class Elasund():
                                 p.votes[self._board.getRandomVote()] += 1
                             break
 
+    @checkStateDecorator(('building',), 'Error: current state is not building')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('build')
     def build(self, position, building, **addition):
         size = building.getSize()
         square = size[0] * size[1]
@@ -175,6 +185,9 @@ class Elasund():
 
         self._preBuild(building, position)
 
+    @checkStateDecorator(('building',), 'Error: current state is not building')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('build')
     def buildWall(self, position):
         player = self.getCurrentPlayer()
         wall = player.getNextWall()
@@ -197,8 +210,30 @@ class Elasund():
         if msg is not None:
             return msg
 
+    @checkStateDecorator(('claim',), 'Error: current state is not claim')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('claimed')
     def claim(self, position, value, **addition):
-        return self._board.putClaim(self._players[self._currentPlayerIndex].getColor(), value, position)
+        return self._board.putClaim(self.getCurrentPlayer().getColor(), value, position)
+
+    @checkStateDecorator(('claim',), 'Error: current state is not claim')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('claimed')
+    def takeTwoGold(self):
+        self.getCurrentPlayer().gold += 2
+
+    @checkStateDecorator(('adding',), 'Error: current state is not adding')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('add')
+    def adding(self, action):
+        # TODO release adding
+        pass
+
+    @checkStateDecorator(('building', 'building2', 'claim', 'adding'), 'Error: current state is not correct')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('skip')
+    def skip(self):
+        pass
 
     def victory(self, player):
         self._changeState('win')
@@ -248,3 +283,6 @@ class Elasund():
                 self.victory(player)
             else:
                 self.error = 'Check count cubes on %s player' % player.getColor()
+
+    def _nextPlayer(self):
+        self._currentPlayerIndex = (self._currentPlayerIndex + 1) % len(self.getPlayers())

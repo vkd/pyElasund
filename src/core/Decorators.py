@@ -1,7 +1,7 @@
 def checkStateDecorator(needState, error):
     def decorator(func):
         def wrapper(self, *args, **kwargs):
-            if self._state == needState:
+            if self._state in needState:
                 return func(self, *args, **kwargs)
             else:
                 return error

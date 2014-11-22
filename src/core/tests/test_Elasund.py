@@ -11,16 +11,17 @@ class ElasundTestCase(unittest.TestCase):
         player = elasund.getCurrentPlayer()
         player.gold = 3
 
-        error = elasund.claim((5, 5), 1)
+        elasund.income()
+        error = elasund._board.putClaim(elasund.getCurrentPlayer().getColor(), 1, (5, 5))
         self.assertIsNone(error)
-        error = elasund.claim((6, 6), 0)
+        error = elasund._board.putClaim(elasund.getCurrentPlayer().getColor(), 0, (6, 6))
         self.assertIsNone(error)
 
         buildings = elasund.getBuildings()
         self.assertEqual(len(buildings['hotel']), 5)
 
         error = elasund.build((5, 5), buildings['hotel'][0])
-        self.assertIsNone(error)
+        self.assertEqual(error, 'ok')
 
         self.assertEqual(len(buildings['hotel']), 4)
 
