@@ -21,6 +21,10 @@ class Elasund():
             ('*', 'error'): 'error',
             ('', 'init'): 'income',
             ('income', 'incomed'): 'building',
+            ('income', 'some_ship'): 'change_ship',
+            ('change_ship', 'changed'): 'building',
+            ('change_ship', 'red_ship'): 'pirate',
+            ('pirate', 'pirated'): 'building',
             ('building', 'build'): 'building2',
             ('building2', 'build'): 'claim',
             ('building', 'skip'): 'claim',
@@ -63,47 +67,69 @@ class Elasund():
 
     @checkStateDecorator(('income',), 'Error: current state is not income')
     @returnOkIfNotError
-    @changeStateOnSuccessful('incomed')
     def income(self):
         dice = self._sumDice.next()
 
         self._board.shipIsRed = dice == 7
-        if dice == self._board.shipPosition:
-            # TODO make choise by player
-            dice += 2 if dice <= 10 else -2
+        if dice == self._board.shipPosition or self._board.shipIsRed:
+            self._changeState('some_ship')
+            return 'change_ship'
+
+        ''' Income '''
         self._board.shipPosition = dice
+        self._calcIncome()
+        self._changeState('incomed')
+
+    @checkStateDecorator(('change_ship',), 'Error: current state is not change_ship')
+    @returnOkIfNotError
+    def change_ship(self, row):
+        if row < 2 or row > 12 or row == 7:
+            return 'Error: incorrect row value'
+        if row == self._board.shipPosition:
+            return 'Error: no choise some ship position'
 
         if self._board.shipIsRed:
-            ''' Pirate ship '''
-            # TODO pirate ship
-            pass
+            self._board.shipPosition = row
+            self._changeState('red_ship')
+            return {'success': 'pirate_ship', 'cards': self._board.getCountCubeByRow(), 'current_player_count_on_walls': self._board.getCountCubeOnWallByPlayer(self.getCurrentPlayer().getColor())}
         else:
-            ''' Income '''
-            y = self._board.getRowByDice(dice)
-            for x in range(0, self._board.getMaxWidthBoard() + 1):
-                pos = (x, y,)
-                cell = self._board.cells.get(pos, None)
-                if cell is None:
-                    break
+            correct_pos = {
+                2: (4, ),
+                3: (5, ),
+                4: (2, 6, ),
+                5: (3, 8, ),
+                6: (4, 9, ),
+                8: (5, 10, ),
+                9: (6, 11, ),
+                10: (8, 12, ),
+                11: (9, ),
+                12: (10, ),
+            }
+            if row in correct_pos[self._board.shipPosition]:
+                self._board.shipPosition = row
+                self._calcIncome()
+                self._changeState('changed')
+            else:
+                return 'Error: next position must be diff 2'
 
-                if cell['type'] == 'ref':
-                    cell = self._board.cells[cell['position']]
+    @checkStateDecorator(('pirate',), 'Error: current state is not pirate')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('pirated')
+    def pirate(self, cards, needCurentPlayer):
+        for color, count in self._board.getCountCubeByRow():
+            if len(cards[color]) != count:
+                return 'Error: %s player must give %s cards' % (color, count)
 
-                if cell['type'] != 'building':
-                    break
+        countCubesOnWalls = self._board.getCountCubeOnWallByPlayer(self.getCurrentPlayer().getColor())
+        if len(needCurentPlayer) > countCubesOnWalls:
+            return 'Error: current player must take %s cards' % countCubesOnWalls
 
-                building = cell['building']
-                incomeType = building.getIncomeType()
-                if incomeType is None:
-                    break
-
-                    for p in self._players:
-                        if p.getColor() == building.getColor():
-                            if incomeType == 'gold':
-                                p.gold += 1
-                            elif incomeType == 'vote':
-                                p.votes[self._board.getRandomVote()] += 1
-                            break
+        totalCards = {
+            'gold': 0,
+            'red': 0,
+            'green': 0,
+            'blue': 0,
+        }
 
     @checkStateDecorator(('building',), 'Error: current state is not building')
     @returnOkIfNotError
@@ -238,6 +264,34 @@ class Elasund():
     def victory(self, player):
         self._changeState('win')
         self._message = '%s player is win' % player.getColor()
+
+    def _calcIncome(self):
+        ''' Income '''
+        y = self._board.getRowByDice(self._board.shipPosition)
+        for x in range(0, self._board.getMaxWidthBoard() + 1):
+            pos = (x, y,)
+            cell = self._board.cells.get(pos, None)
+            if cell is None:
+                break
+
+            if cell['type'] == 'ref':
+                cell = self._board.cells[cell['position']]
+
+            if cell['type'] != 'building':
+                break
+
+            building = cell['building']
+            incomeType = building.getIncomeType()
+            if incomeType is None:
+                break
+
+                for p in self._players:
+                    if p.getColor() == building.getColor():
+                        if incomeType == 'gold':
+                            p.gold += 1
+                        elif incomeType == 'vote':
+                            p.votes[self._board.getRandomVote()] += 1
+                        break
 
     def _preBuild(self, building, position):
         building.setColor(self.getCurrentPlayer().getColor())

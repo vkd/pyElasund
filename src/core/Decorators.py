@@ -13,7 +13,7 @@ def returnOkIfNotError(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         if result is None:
-            result = 'ok'
+            result = {'success': 'ok', }
         return result
     return wrapper
 

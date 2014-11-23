@@ -37,6 +37,51 @@ class Board():
     def getRowByDice(self, dice):
         return dice - (3 if dice >= 8 else 2)
 
+    def getCountCubeByRow(self):
+        dice = self.shipPosition
+        buildings = {}
+        y = self.getRowByDice(dice)
+        for x in range(self.getMaxWidthBoard() + 1):
+            cell = self.cells.get((x, y,), None)
+            if cell is not None:
+                building = cell
+                position = (x, y,)
+                if cell['type'] == 'ref':
+                    position = cell['position']
+                    building = self.cells[position]
+                if building['type'] == 'building':
+                    buildings[position] = building
+
+        result = {}
+        for position, building in buildings.items():
+            color = building.getColor()
+            if color not in result:
+                result[color] = 0
+            result[color] += building.getCubesByLine(y - position[1])
+
+    def getCountCubeOnWallByPlayer(self, color):
+        count = 0
+
+        def getCountCubeByPosition(position, color):
+            cell = self.cells.get(position, None)
+            if (cell is not None) and (cell['type'] == 'wall'):
+                if cell['color'] == color and cell['value'] % 3 == 0:
+                    return 1
+            return 0
+
+        ''' Top '''
+        for x in range(2, 7 + 1):
+            count += getCountCubeByPosition((x, -1,), color)
+        ''' Right '''
+
+        for y in range(1, 8 + 1):
+            count += getCountCubeByPosition((self.getMaxWidthBoard() + 1, y), color)
+        ''' Bottom '''
+        for x in range(2, 7 + 1):
+            count += getCountCubeByPosition((x, 10,), color)
+
+        return count
+
     def buildBuilding(self, building, position):
         if building is None:
             return 'Error: building is empty'

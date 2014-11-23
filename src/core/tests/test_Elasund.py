@@ -21,7 +21,7 @@ class ElasundTestCase(unittest.TestCase):
         self.assertEqual(len(buildings['hotel']), 5)
 
         error = elasund.build((5, 5), buildings['hotel'][0])
-        self.assertEqual(error, 'ok')
+        self.assertEqual(error['success'], 'ok')
 
         self.assertEqual(len(buildings['hotel']), 4)
 
@@ -72,7 +72,7 @@ class ElasundTestCase(unittest.TestCase):
         elasund = Elasund(colors)
         self.assertEqual(elasund.getState(), 'income')
         result = elasund.income()
-        self.assertEqual(result, 'ok')
+        self.assertEqual(result['success'], 'ok')
         self.assertEqual(elasund.getState(), 'building')
         result = elasund.income()
         self.assertEqual(result, 'Error: current state is not income')
