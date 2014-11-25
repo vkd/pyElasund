@@ -116,20 +116,56 @@ class Elasund():
     @returnOkIfNotError
     @changeStateOnSuccessful('pirated')
     def pirate(self, cards, needCurentPlayer):
-        for color, count in self._board.getCountCubeByRow():
-            if len(cards[color]) != count:
+        needCards = self._board.getCountCubeByRow()
+        for color, count in needCards:
+            player = None
+            for p in self._players:
+                if p.getColor() == color:
+                    player = p
+                    break
+            gold = cards.get(color, {}).get('gold', 0)
+            if player.gold < gold:
+                return 'Error: %s player need %s gold' % (color, gold)
+
+            red = cards.get(color, {}).get('red', 0)
+            if player.votes['red'] < red:
+                return 'Error: %s player need %s red vote card' % (color, red)
+
+            green = cards.get(color, {}).get('green', 0)
+            if player.votes['green'] < green:
+                return 'Error: %s player need %s green vote card' % (color, green)
+
+            blue = cards.get(color, {}).get('blue', 0)
+            if player.votes['blue'] < blue:
+                return 'Error: %s player need %s blue vote card' % (color, blue)
+
+            if (gold + red + blue + green) != count:
                 return 'Error: %s player must give %s cards' % (color, count)
 
         countCubesOnWalls = self._board.getCountCubeOnWallByPlayer(self.getCurrentPlayer().getColor())
-        if len(needCurentPlayer) > countCubesOnWalls:
+        gold = needCurentPlayer.get(color, {}).get('gold', 0)
+        red = needCurentPlayer.get(color, {}).get('red', 0)
+        green = needCurentPlayer.get(color, {}).get('green', 0)
+        blue = needCurentPlayer.get(color, {}).get('blue', 0)
+        if (gold + red + blue + green) != countCubesOnWalls:
             return 'Error: current player must take %s cards' % countCubesOnWalls
 
-        totalCards = {
-            'gold': 0,
-            'red': 0,
-            'green': 0,
-            'blue': 0,
-        }
+        for color, count in needCards:
+            player = None
+            for p in self._players:
+                if p.getColor() == color:
+                    player = p
+                    break
+            player.gold -= cards.get(color, {}).get('gold', 0)
+            player.votes['red'] -= cards.get(color, {}).get('red', 0)
+            player.votes['green'] -= cards.get(color, {}).get('green', 0)
+            player.votes['blue'] -= cards.get(color, {}).get('blue', 0)
+
+        currentPlayer = self.getCurrentPlayer()
+        currentPlayer.gold += needCurentPlayer.get(color, {}).get('gold', 0)
+        currentPlayer.votes['red'] += needCurentPlayer.get(color, {}).get('red', 0)
+        currentPlayer.votes['green'] += needCurentPlayer.get(color, {}).get('green', 0)
+        currentPlayer.votes['blue'] += needCurentPlayer.get(color, {}).get('blue', 0)
 
     @checkStateDecorator(('building',), 'Error: current state is not building')
     @returnOkIfNotError
