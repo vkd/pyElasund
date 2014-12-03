@@ -13,7 +13,9 @@ def returnOkIfNotError(func):
     def wrapper(*args, **kwargs):
         result = func(*args, **kwargs)
         if result is None:
-            result = {'success': 'ok', }
+            result = {'success': True, }
+        elif result is str:
+            result = {'success': False, 'error': result, }
         return result
     return wrapper
 

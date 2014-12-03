@@ -27,6 +27,10 @@ class Elasund():
             ('pirate', 'pirated'): 'building',
             ('building', 'build'): 'building2',
             ('building2', 'build'): 'claim',
+            ('building', 'firstChurch'): 'firstChurch',
+            ('building2', 'firstChurch'): 'firstChurch2',
+            ('firstChurch', 'build'): 'building2',
+            ('firstChurch2', 'build'): 'claim',
             ('building', 'skip'): 'claim',
             ('building2', 'skip'): 'claim',
             ('claim', 'claimed'): 'adding',
@@ -167,10 +171,12 @@ class Elasund():
         currentPlayer.votes['green'] += needCurentPlayer.get(color, {}).get('green', 0)
         currentPlayer.votes['blue'] += needCurentPlayer.get(color, {}).get('blue', 0)
 
-    @checkStateDecorator(('building',), 'Error: current state is not building')
+    @checkStateDecorator(('building', 'building2', ), 'Error: current state is not building')
     @returnOkIfNotError
     @changeStateOnSuccessful('build')
     def build(self, position, building, **addition):
+        if building.getType() == 'church':
+            return 'Error: use buildChurch'
         size = building.getSize()
         square = size[0] * size[1]
 
@@ -178,7 +184,7 @@ class Elasund():
 
         if building.getType() in ['house', 'small_totem', 'totem', 'workshop']:
             if building.getColor() != player.getColor():
-                return ''
+                return 'Error: this building to another player'
 
         buildings = []
         claims = {c: 0 for c in self._colors}
@@ -247,7 +253,7 @@ class Elasund():
 
         self._preBuild(building, position)
 
-    @checkStateDecorator(('building',), 'Error: current state is not building')
+    @checkStateDecorator(('building', 'building2', ), 'Error: current state is not building')
     @returnOkIfNotError
     @changeStateOnSuccessful('build')
     def buildWall(self, position):
@@ -271,6 +277,34 @@ class Elasund():
         msg = self._board.buildWall(position, wall['value'], player.getColor())
         if msg is not None:
             return msg
+
+    @checkStateDecorator(('building', 'building2', ), 'Error: current state is not building')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('build')
+    def buildChurch(self):
+        if len(self._board.buildings['church']) == 9:
+            return 'Error: first time use buildFirstChurch()'
+
+    @checkStateDecorator(('building', 'building2', ), 'Error: current state is not building')
+    def buildFirstChurch(self):
+        if len(self._board.buildings['church']) != 9:
+            return 'Error: use buildChurch()'
+
+        result = [self._board.buildings['church'][i]._index for i in range(2)]
+
+        self._changeState('firstChurch')
+        return {'success': 'ok', 'values': result}
+
+    @checkStateDecorator(('firstChurch', 'firstChurch2', ), 'Error: current state is not firstChurch')
+    @returnOkIfNotError
+    @changeStateOnSuccessful('build')
+    def selectFirstChurch(self, index):
+        if len(self._board.buildings['church']) != 9:
+            return 'Error: use buildChurch()'
+        if index != 0 and index != 1:
+            return 'Error: index must be 0 or 1'
+        self._board.destroyBuilding((2, 5,))
+        self._board.buildBuilding(self._board.buildings['church'][i], (2, 5,))
 
     @checkStateDecorator(('claim',), 'Error: current state is not claim')
     @returnOkIfNotError
