@@ -285,6 +285,17 @@ class Elasund():
         if len(self._board.buildings['church']) == 9:
             return 'Error: first time use buildFirstChurch()'
 
+        first_church_on_map = self._board.cells[(2, 5,)]
+        first_index = first_church_on_map.getIndex()
+        next_church = self._board.buildings['church'][0]
+        next_index = next_church.getIndex()
+        pos = (2 + ((next_index - 1) % 3) - ((first_index - 1) % 3),
+               5 + ((next_index + 1) // 3) - ((first_index + 1) // 3)
+               )
+
+        self._board.destroyBuilding(pos)
+        self._board.buildBuilding(next_church, pos)
+
     @checkStateDecorator(('building', 'building2', ), 'Error: current state is not building')
     def buildFirstChurch(self):
         if len(self._board.buildings['church']) != 9:
